@@ -1,0 +1,39 @@
+﻿@model CART.Models.Product
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var commentList = new List<CART.Models.ProductComment>();
+    using (CART.Models.CARTEntities db = new CART.Models.CARTEntities())
+    {
+        commentList = db.ProductComments.Where(e => e.Product == this.Model.Id.ToString()).ToList();
+    }
+}
+
+<div>
+    <dl>
+        <dt>
+            庫存數量
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        @foreach(var comment in commentList)
+        {
+            <dt>@comment.UserId:</dt>
+            <dd>@comment.Content (@comment.CreateDate)</dd>
+        }
+    </dl>
+    @using (Html.BeginForm("AddComment", "Home", FormMethod.Post, new { }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.TextBox("Content")
+        <input type="submit" value="留言" class="btn btn-default"/>
+    }
+</div>
+
+<h2>商品資訊</h2>
+
